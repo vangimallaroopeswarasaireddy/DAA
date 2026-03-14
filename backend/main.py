@@ -18,13 +18,15 @@ from jwt_utils import create_access_token
 from auth_dep import get_current_user
 from optimizer import schedule_water_flow
 
-Base.metadata.create_all(bind=engine)
-
 app = FastAPI(title="Stay Hydrated Backend", version="1.0.0")
+
+@app.on_event("startup")
+def on_startup():
+    Base.metadata.create_all(bind=engine)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # for student project/demo
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
