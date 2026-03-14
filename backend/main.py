@@ -21,8 +21,13 @@ from optimizer import schedule_water_flow
 app = FastAPI(title="Stay Hydrated Backend", version="1.0.0")
 
 @app.on_event("startup")
-def on_startup():
-    Base.metadata.create_all(bind=engine)
+async def startup():
+    try:
+        Base.metadata.create_all(bind=engine)
+        print("Database tables ready")
+    except Exception as e:
+        print("Startup database error:", repr(e))
+        raise e
 
 app.add_middleware(
     CORSMiddleware,
